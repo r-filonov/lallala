@@ -1,7 +1,12 @@
 {
-  "display_name": "Icon Overhaul (Font & SVG)",
-  "loading_order": 1,
-  "optional": true,
-  "author": "meow",
-  "version": "1.0.0"
+    "display_name": "Icon Overhaul (Font & SVG)",
+    "loading_order": 1,
+    "requires": [],
+    "optional": [],
+    "js": "index.js",
+    "css": "style.css",
+    "author": "antihype",
+    "version": "1.0.0",
+    "homePage": "",
+    "auto_update": false
 }
