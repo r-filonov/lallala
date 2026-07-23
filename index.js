@@ -67,7 +67,7 @@ function applySVGs(svgIcons) {
     let cssRules = '';
     svgIcons.forEach(item => {
         if (item.faClass && item.url) {
-            let cleanClass = item.faClass.replace('.', '').trim(); // убираем точку, если юзер случайно ввел
+            let cleanClass = item.faClass.replace('.', '').trim();
             cssRules += `
                 .${cleanClass}::before {
                     content: '' !important;
@@ -87,6 +87,7 @@ function applySVGs(svgIcons) {
 // Отрисовка полей ввода SVG
 function renderSvgUI(settings) {
     const list = document.getElementById('st-svg-list');
+    if (!list) return;
     list.innerHTML = '';
     settings.svgIcons.forEach((item, index) => {
         const row = document.createElement('div');
@@ -112,62 +113,66 @@ function renderSvgUI(settings) {
 // ИНИЦИАЛИЗАЦИЯ И СЛУШАТЕЛИ
 // -------------------------------
 jQuery(async () => {
-    // Подгружаем UI
-    const html = await $.get(`${getContext().extensionFolderPath}/third-party/${EXT_NAME}/index.html`);
-    $('#extensions_settings').append(html);
+    try {
+        const html = await $.get(`${getContext().extensionFolderPath}/third-party/${EXT_NAME}/index.html`);
+        $('#extensions_settings').append(html);
 
-    const settings = loadSettings();
-    applyFont(settings.fontDataUrl);
-    applySVGs(settings.svgIcons);
-    renderSvgUI(settings);
-
-    // --- События Шрифта ---
-    $('#st-icon-font-apply').on('click', () => {
-        const fileInput = document.getElementById('st-icon-font-file');
-        if (!fileInput.files.length) {
-            toastr.warning('Сначала выберите файл .woff2');
-            return;
-        }
-        const reader = new FileReader();
-        reader.onload = (e) => {
-            settings.fontDataUrl = e.target.result;
-            saveSettingsDebounced();
-            applyFont(settings.fontDataUrl);
-            toastr.success('Кастомный шрифт успешно загружен!');
-        };
-        reader.readAsDataURL(fileInput.files[0]);
-    });
-
-    $('#st-icon-font-reset').on('click', () => {
-        settings.fontDataUrl = '';
-        saveSettingsDebounced();
-        applyFont('');
-        document.getElementById('st-icon-font-file').value = '';
-        toastr.info('Возвращен стандартный шрифт FontAwesome.');
-    });
-
-    // --- События SVG ---
-    $('#st-svg-add-btn').on('click', () => {
-        settings.svgIcons.push({ faClass: '', url: '' });
+        const settings = loadSettings();
+        applyFont(settings.fontDataUrl);
+        applySVGs(settings.svgIcons);
         renderSvgUI(settings);
-    });
 
-    $('#st-svg-save-btn').on('click', () => {
-        const classInputs = document.querySelectorAll('.fa-class-input');
-        const urlInputs = document.querySelectorAll('.svg-url-input');
-        
-        settings.svgIcons = [];
-        classInputs.forEach((input, i) => {
-            if (input.value.trim() || urlInputs[i].value.trim()) {
-                settings.svgIcons.push({
-                    faClass: input.value.trim(),
-                    url: urlInputs[i].value.trim()
-                });
+        // --- События Шрифта ---
+        $('#st-icon-font-apply').on('click', () => {
+            const fileInput = document.getElementById('st-icon-font-file');
+            if (!fileInput.files.length) {
+                toastr.warning('Сначала выберите файл .woff2');
+                return;
             }
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                settings.fontDataUrl = e.target.result;
+                saveSettingsDebounced();
+                applyFont(settings.fontDataUrl);
+                toastr.success('Кастомный шрифт успешно загружен!');
+            };
+            reader.readAsDataURL(fileInput.files[0]);
         });
 
-        saveSettingsDebounced();
-        applySVGs(settings.svgIcons);
-        toastr.success('Настройки SVG сохранены!');
-    });
+        $('#st-icon-font-reset').on('click', () => {
+            settings.fontDataUrl = '';
+            saveSettingsDebounced();
+            applyFont('');
+            document.getElementById('st-icon-font-file').value = '';
+            toastr.info('Возвращен стандартный шрифт FontAwesome.');
+        });
+
+        // --- События SVG ---
+        $('#st-svg-add-btn').on('click', () => {
+            settings.svgIcons.push({ faClass: '', url: '' });
+            renderSvgUI(settings);
+        });
+
+        $('#st-svg-save-btn').on('click', () => {
+            const classInputs = document.querySelectorAll('.fa-class-input');
+            const urlInputs = document.querySelectorAll('.svg-url-input');
+            
+            settings.svgIcons = [];
+            classInputs.forEach((input, i) => {
+                if (input.value.trim() || urlInputs[i].value.trim()) {
+                    settings.svgIcons.push({
+                        faClass: input.value.trim(),
+                        url: urlInputs[i].value.trim()
+                    });
+                }
+            });
+
+            saveSettingsDebounced();
+            applySVGs(settings.svgIcons);
+            toastr.success('Настройки SVG сохранены!');
+        });
+
+    } catch (err) {
+        console.error(`[${EXT_NAME}] Ошибка при инициализации UI:`, err);
+    }
 });
