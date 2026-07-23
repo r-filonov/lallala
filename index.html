@@ -1,0 +1,34 @@
+<div class="st-extension-block">
+    <div class="inline-drawer">
+        <div class="inline-drawer-toggle inline-drawer-header">
+            <b>Умная замена иконок</b>
+            <div class="inline-drawer-icon fa-solid fa-circle-chevron-down down"></div>
+        </div>
+        <div class="inline-drawer-content">
+            
+            <!-- Блок 1: Загрузка кастомного шрифта -->
+            <h4>1. Загрузка пака шрифтом (.woff2)</h4>
+            <p class="hint_text">Загрузите скомпилированный пак иконок в формате .woff2. Это заменит весь шрифт FontAwesome целиком.</p>
+            <input type="file" id="st-icon-font-file" accept=".woff2,.ttf" class="text_pole margin-bottom-2">
+            <div class="flex-container flexFlowRow gap-2 margin-bottom-3">
+                <button id="st-icon-font-apply" class="menu_button flex1">📥 Загрузить шрифт</button>
+                <button id="st-icon-font-reset" class="menu_button red flex1">❌ Сбросить</button>
+            </div>
+
+            <hr style="opacity: 0.2; margin: 15px 0;">
+
+            <!-- Блок 2: Точечная замена на SVG -->
+            <h4>2. Точечная замена (SVG)</h4>
+            <p class="hint_text">Замените отдельные иконки ссылками на SVG. Это работает поверх шрифта и красится в цвета интерфейса.</p>
+            <div id="st-svg-list" class="flex-container flexFlowColumn gap-2 margin-bottom-2">
+                <!-- Сюда добавляются строки -->
+            </div>
+            
+            <div class="flex-container flexFlowRow gap-2">
+                <button id="st-svg-add-btn" class="menu_button flex1">➕ Добавить SVG</button>
+                <button id="st-svg-save-btn" class="menu_button flex1">💾 Сохранить SVG</button>
+            </div>
+
+        </div>
+    </div>
+</div>
